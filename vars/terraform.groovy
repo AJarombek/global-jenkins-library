@@ -49,14 +49,16 @@ def terraformApply(String directory, String repository, boolean autoApply) {
                 def result = sh(
                     script: '''
                         terraform plan -detailed-exitcode
-                        echo $?
+                        echo $? > exitCode.txt
                     ''',
                     returnStdout: true
                 )
 
+                def exitCode = readFile('exitCode.txt').trim()
+
                 // The result is 0 if the plan found no changes, 1 if there are errors with the plan,
                 // and 2 if the plan is successful and changes will be made.
-                switch (result) {
+                switch (exitCode) {
                     case 0:
                         currentBuild.result = 'SUCCESS'
                         return
