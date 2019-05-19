@@ -49,16 +49,14 @@ def terraformApply(String directory, String repository, boolean autoApply) {
                 def result = sh(
                     script: '''
                         terraform plan -detailed-exitcode
-                        echo $? > exitCode.txt
                     ''',
-                    returnStdout: true
+                    label: 'terraform plan',
+                    returnStatus: true
                 )
-
-                def exitCode = readFile('exitCode.txt').trim()
 
                 // The result is 0 if the plan found no changes, 1 if there are errors with the plan,
                 // and 2 if the plan is successful and changes will be made.
-                switch (exitCode) {
+                switch (result) {
                     case 0:
                         currentBuild.result = 'SUCCESS'
                         return
@@ -87,8 +85,10 @@ def terraformApply(String directory, String repository, boolean autoApply) {
                 currentBuild.result = 'UNSTABLE'
             }
         }
-        ansiColor('css') {
-            sh "terraform apply -auto-approve"
+        dir(directory) {
+            ansiColor('css') {
+                sh "terraform apply -auto-approve"
+            }
         }
     }
 }
@@ -120,8 +120,10 @@ def terraformDestroy(String directory, String repository) {
         }
     }
     stage('Destroy') {
-        ansiColor('css') {
-            sh "terraform destroy -auto-approve"
+        dir(directory) {
+            ansiColor('css') {
+                sh "terraform destroy -auto-approve"
+            }
         }
     }
 }
