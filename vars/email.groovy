@@ -19,32 +19,39 @@ def sendEmail(String bodyTitle, String bodyContent, String jobName, String build
               String buildNumber, String buildUrl) {
 
     def statusColors = [
-            SUCCESS: '#28a745',
-            UNSTABLE: '#ffc107',
-            FAILURE: '#dc3545',
-            OTHER: '#bbb'
+        SUCCESS: '#28a745',
+        UNSTABLE: '#ffc107',
+        FAILURE: '#dc3545',
+        OTHER: '#bbb'
     ]
 
-    def subject = "$jobName Build #$buildNumber - $buildStatus"
+    def statusEmojis = [
+        SUCCESS: '✅',
+        UNSTABLE: '⚠️',
+        FAILURE: '❌',
+        OTHER: '❗'
+    ]
+
+    def subject = "${statusEmojis[buildStatus] ?: statusEmojis['OTHER']} $jobName Build #$buildNumber - $buildStatus"
     def body = """
-            <body>
-                <h1 style="font-family: Calibri, Arial, sans-serif">${bodyTitle}</h1>
-                <p style="font-family: Calibri, Arial, sans-serif">
-                    Build 
-                    <a href="$buildUrl" style="font-weight: bold; color: #777;">$buildNumber</a> 
-                    Result:
-                    <strong style="color: ${statusColors[buildStatus] ?: statusColors['OTHER']}">
-                        $buildStatus
-                    </strong>
-                    $bodyContent
-                </p>
-            </body>
-        """
+        <body>
+            <h1 style="font-family: Calibri, Arial, sans-serif">${bodyTitle}</h1>
+            <p style="font-family: Calibri, Arial, sans-serif">
+                Build 
+                <a href="$buildUrl" style="font-weight: bold; color: #777;">$buildNumber</a> 
+                Result:
+                <strong style="color: ${statusColors[buildStatus] ?: statusColors['OTHER']}">
+                    $buildStatus
+                </strong>
+                $bodyContent
+            </p>
+        </body>
+    """
 
     emailext(
-            subject: subject,
-            body: body,
-            to: "andrew@jarombek.com",
-            mimeType: 'text/html'
+        subject: subject,
+        body: body,
+        to: "andrew@jarombek.com",
+        mimeType: 'text/html'
     )
 }
