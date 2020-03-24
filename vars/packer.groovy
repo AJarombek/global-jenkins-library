@@ -27,7 +27,7 @@ def packerBuild(String directory, String filename, String repository, String bra
             ],
             submoduleCfg: [],
             userRemoteConfigs: [[
-                credentialsId: '865da7f9-6fc8-49f3-aa56-8febd149e72b',
+                credentialsId: 'ajarombek-github',
                 url: "git@github.com:AJarombek/${repository}.git"
             ]]
         ])

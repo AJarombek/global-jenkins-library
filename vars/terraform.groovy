@@ -20,7 +20,7 @@ def terraformApply(String directory, String repository, boolean autoApply) {
         cleanWs()
         checkout([$class: 'GitSCM',
                   branches: [[name: '*/master']],
-                  credentialsId: "865da7f9-6fc8-49f3-aa56-8febd149e72b",
+                  credentialsId: "ajarombek-github",
                   userRemoteConfigs: [[url: "$repository"]]])
     }
     // Second, initialize the Terraform working directory and backend on S3
@@ -105,7 +105,7 @@ def terraformDestroy(String directory, String repository) {
         cleanWs()
         checkout([$class: 'GitSCM',
                   branches: [[name: '*/master']],
-                  credentialsId: "865da7f9-6fc8-49f3-aa56-8febd149e72b",
+                  credentialsId: "ajarombek-github",
                   userRemoteConfigs: [[url: "$repository"]]])
     }
     // Second, initialize the Terraform working directory and backend on S3
