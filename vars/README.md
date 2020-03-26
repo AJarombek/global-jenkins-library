@@ -17,3 +17,7 @@ must exist at the top of the pipeline code.
 | `packer.groovy`         | Functions containing reusable Packer pipeline steps.                                         |
 | `pipelinejob.groovy`    | Functions containing commonly used Jenkins pipeline steps.                                   |
 | `terraform.groovy`      | Functions containing reusable Terraform pipeline steps.                                      |
+
+### Resources
+
+1) [Jenkins Sharing Pipeline Code](https://jenkins.io/blog/2017/10/02/pipeline-templates-with-shared-libraries/)
