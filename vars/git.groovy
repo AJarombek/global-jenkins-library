@@ -15,7 +15,12 @@ def basicClone(String repository, String branch = 'master') {
     checkout([
         $class: 'GitSCM',
         branches: [[name: "*/$branch"]],
-        credentialsId: "ajarombek-github",
-        userRemoteConfigs: [[url: "git@github.com:AJarombek/${repository}.git"]]
+        doGenerateSubmoduleConfigurations: false,
+        extensions: [],
+        submoduleCfg: [],
+        userRemoteConfigs: [[
+            credentialsId: 'ajarombek-github',
+            url: "git@github.com:AJarombek/${repository}.git"
+        ]]
     ])
 }

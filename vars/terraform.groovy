@@ -48,7 +48,7 @@ def terraformApply(String directory, String repository, boolean autoApply) {
             ansiColor('css') {
                 def result = sh(
                     script: '''
-                        terraform plan -detailed-exitcode
+                        terraform plan -detailed-exitcode -out=terraform-dev.tfplan
                     ''',
                     label: 'terraform plan',
                     returnStatus: true
@@ -87,7 +87,7 @@ def terraformApply(String directory, String repository, boolean autoApply) {
         }
         dir(directory) {
             ansiColor('css') {
-                sh "terraform apply -auto-approve"
+                sh "terraform apply -auto-approve terraform-dev.tfplan"
             }
         }
     }
