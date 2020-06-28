@@ -21,3 +21,4 @@ must exist at the top of the pipeline code.
 ### Resources
 
 1) [Jenkins Sharing Pipeline Code](https://jenkins.io/blog/2017/10/02/pipeline-templates-with-shared-libraries/)
+2) [Docker Network=Host](https://github.com/moby/moby/issues/25537#issuecomment-607376533)
