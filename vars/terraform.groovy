@@ -34,8 +34,8 @@ def terraformValidate(String directory) {
  * @param directory The directory containing Terraform files.
  */
 def terraformPlan(String directory) {
-    TERRAFORM_NO_CHANGES = false
-    TERRAFORM_PLAN_ERRORS = false
+    env.TERRAFORM_NO_CHANGES = 'false'
+    env.TERRAFORM_PLAN_ERRORS = 'false'
 
     dir(directory) {
         def result = sh(
@@ -48,11 +48,11 @@ def terraformPlan(String directory) {
         switch (result) {
             case 0:
                 currentBuild.result = 'SUCCESS'
-                TERRAFORM_NO_CHANGES = true
+                env.TERRAFORM_NO_CHANGES = 'true'
                 break
             case 1:
                 currentBuild.result = 'UNSTABLE'
-                TERRAFORM_PLAN_ERRORS = true
+                env.TERRAFORM_PLAN_ERRORS = 'true'
                 break
             case 2:
                 println 'The "terraform plan" Response Was Valid.'
@@ -71,18 +71,15 @@ def terraformPlan(String directory) {
  */
 def terraformApply(String directory, boolean autoApply) {
     if (!autoApply) {
-        try {
-            timeout(time: 15, unit: 'MINUTES') {
-                input message: 'Confirm Plan', ok: 'Apply'
-            }
-        } catch (Throwable ex) {
-            println 'Timeout Exceeded.'
-            currentBuild.result = 'UNSTABLE'
+        timeout(time: 15, unit: 'MINUTES') {
+            planConfirmed = input message: 'Confirm Plan', ok: 'Apply'
         }
     }
 
-    dir(directory) {
-        sh "terraform apply -auto-approve terraform.tfplan"
+    if (planConfirmed) {
+        dir(directory) {
+            sh "terraform apply -auto-approve terraform.tfplan"
+        }
     }
 }
 
@@ -91,9 +88,9 @@ def terraformApply(String directory, boolean autoApply) {
  * @param directory The directory containing Terraform files.
  */
 def terraformPlanDestroy(String directory) {
-    TERRAFORM_NO_CHANGES = false
-    TERRAFORM_PLAN_ERRORS = false
-    
+    env.TERRAFORM_NO_CHANGES = 'false'
+    env.TERRAFORM_PLAN_ERRORS = 'false'
+
     dir(directory) {
         def result = sh(
             script: 'terraform plan -destroy -detailed-exitcode',
@@ -105,11 +102,11 @@ def terraformPlanDestroy(String directory) {
         switch (result) {
             case 0:
                 currentBuild.result = 'SUCCESS'
-                TERRAFORM_NO_CHANGES = true
+                env.TERRAFORM_NO_CHANGES = 'true'
                 break
             case 1:
                 currentBuild.result = 'UNSTABLE'
-                TERRAFORM_PLAN_ERRORS = true
+                env.TERRAFORM_PLAN_ERRORS = 'true'
                 break
             case 2:
                 println 'The "terraform plan" Response Was Valid.'
@@ -129,15 +126,11 @@ def terraformPlanDestroy(String directory) {
  */
 def terraformDestroy(String directory, boolean autoDestroy) {
     if (!autoDestroy) {
-        try {
-            timeout(time: 15, unit: 'MINUTES') {
-                input message: 'Confirm Plan', ok: 'Apply'
-            }
-        } catch (Throwable ex) {
-            println 'Timeout Exceeded.'
-            currentBuild.result = 'UNSTABLE'
+        timeout(time: 15, unit: 'MINUTES') {
+            input message: 'Confirm Plan', ok: 'Apply'
         }
     }
+
     dir(directory) {
         sh "terraform destroy -auto-approve"
     }

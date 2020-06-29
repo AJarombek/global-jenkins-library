@@ -6,6 +6,12 @@
  * @since 6/22/2020
  */
 
+/**
+ * Build a Docker image for the SaintsXCTF auth service.
+ * @param subDir Subdirectory in the saints-xctf-auth repository to build the image from.
+ * @param zipFilename AWS lambda function zip filename.
+ * @param imageName Name of the Docker image to create.
+ */
 def buildImage(String subDir, String zipFilename, String imageName) {
     dir("repos/saints-xctf-auth/$subDir") {
         sh """
@@ -20,6 +26,12 @@ def buildImage(String subDir, String zipFilename, String imageName) {
     }
 }
 
+/**
+ * Push a new Docker image to DockerHub.
+ * @param imageName Name of a Docker image.
+ * @param imageLabel Label to assign to the image.
+ * @param isLatest Whether or not this label is the latest image version.
+ */
 def pushImage(String imageName, String imageLabel, boolean isLatest) {
     withCredentials([
         usernamePassword(
