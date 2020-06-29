@@ -6,6 +6,10 @@
  * @since 5/12/2019
  */
 
+/**
+ * Initialize the Terraform configuration in a given directory.
+ * @param directory The directory containing Terraform files.
+ */
 def terraformInit(String directory) {
     dir(directory) {
         sh """
@@ -15,13 +19,24 @@ def terraformInit(String directory) {
     }
 }
 
+/**
+ * Validate the Terraform files in a directory for syntax issues.
+ * @param directory The directory containing Terraform files.
+ */
 def terraformValidate(String directory) {
     dir(directory) {
         sh "terraform validate"
     }
 }
 
+/**
+ * Create a plan of the infrastructure that Terraform will create.
+ * @param directory The directory containing Terraform files.
+ */
 def terraformPlan(String directory) {
+    TERRAFORM_NO_CHANGES = false
+    TERRAFORM_PLAN_ERRORS = false
+
     dir(directory) {
         def result = sh(
             script: 'terraform plan -detailed-exitcode -out=terraform.tfplan',
@@ -33,9 +48,11 @@ def terraformPlan(String directory) {
         switch (result) {
             case 0:
                 currentBuild.result = 'SUCCESS'
+                TERRAFORM_NO_CHANGES = true
                 break
             case 1:
                 currentBuild.result = 'UNSTABLE'
+                TERRAFORM_PLAN_ERRORS = true
                 break
             case 2:
                 println 'The "terraform plan" Response Was Valid.'
@@ -47,6 +64,11 @@ def terraformPlan(String directory) {
     }
 }
 
+/**
+ * Apply/create the infrastructure defined in Terraform configuration files.
+ * @param directory The directory containing Terraform files.
+ * @param autoApply Whether to automatically create the infrastructure or prompt the user to confirm/deny creation.
+ */
 def terraformApply(String directory, boolean autoApply) {
     if (!autoApply) {
         try {
@@ -64,10 +86,17 @@ def terraformApply(String directory, boolean autoApply) {
     }
 }
 
+/**
+ * Create a plan of the infrastructure that Terraform will destroy.
+ * @param directory The directory containing Terraform files.
+ */
 def terraformPlanDestroy(String directory) {
+    TERRAFORM_NO_CHANGES = false
+    TERRAFORM_PLAN_ERRORS = false
+    
     dir(directory) {
         def result = sh(
-            script: 'terraform plan -destroy -detailed-exitcode -out=terraform.tfplan',
+            script: 'terraform plan -destroy -detailed-exitcode',
             returnStatus: true
         )
 
@@ -76,9 +105,11 @@ def terraformPlanDestroy(String directory) {
         switch (result) {
             case 0:
                 currentBuild.result = 'SUCCESS'
+                TERRAFORM_NO_CHANGES = true
                 break
             case 1:
                 currentBuild.result = 'UNSTABLE'
+                TERRAFORM_PLAN_ERRORS = true
                 break
             case 2:
                 println 'The "terraform plan" Response Was Valid.'
@@ -90,6 +121,12 @@ def terraformPlanDestroy(String directory) {
     }
 }
 
+/**
+ * Destroy the infrastructure that Terraform files in the specified directory are managing.
+ * @param directory The directory containing Terraform files.
+ * @param autoDestroy Whether to automatically destroy the infrastructure or
+ * prompt the user to confirm/deny destruction.
+ */
 def terraformDestroy(String directory, boolean autoDestroy) {
     if (!autoDestroy) {
         try {
@@ -102,7 +139,7 @@ def terraformDestroy(String directory, boolean autoDestroy) {
         }
     }
     dir(directory) {
-        sh "terraform destroy -auto-approve terraform.tfplan"
+        sh "terraform destroy -auto-approve"
     }
 }
 
