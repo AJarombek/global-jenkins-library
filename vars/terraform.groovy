@@ -72,14 +72,12 @@ def terraformPlan(String directory) {
 def terraformApply(String directory, boolean autoApply) {
     if (!autoApply) {
         timeout(time: 15, unit: 'MINUTES') {
-            planConfirmed = input message: 'Confirm Plan', ok: 'Apply'
+            input message: 'Confirm Plan', ok: 'Apply'
         }
     }
 
-    if (planConfirmed) {
-        dir(directory) {
-            sh "terraform apply -auto-approve terraform.tfplan"
-        }
+    dir(directory) {
+        sh "terraform apply -auto-approve terraform.tfplan"
     }
 }
 
