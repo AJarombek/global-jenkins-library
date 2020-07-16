@@ -4,6 +4,8 @@ Reusable functions for use in Jenkins pipelines.
 
 ### Jenkins Server Setup
 
+> Jenkins Server v2 on Kubernetes performs this setup in the CasC YAML file. 
+
 To implement this repository as a library on the Jenkins server, the following actions are required:
 
 1) Go to the Jenkins server (in my case `jenkins.jarombek.io`) and click on 'Configure Jenkins'.

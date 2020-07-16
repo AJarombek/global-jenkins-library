@@ -55,3 +55,22 @@ def pushImage(String imageName, String imageLabel, boolean isLatest) {
         sudo docker push ajarombek/$imageName:$imageLabel
     """
 }
+
+/**
+ * Remove Docker images from the node this job is running on.
+ * @param imageName Name of a Docker image.
+ * @param imageLabel Label to assign to the image.
+ * @param isLatest Whether or not this label is the latest image version.
+ */
+def cleanupImages(String imageName, String imageLabel, boolean isLatest) {
+    if (isLatest) {
+        sh "sudo docker image rm ajarombek/$imageName:latest"
+    }
+
+    sh """
+        sudo docker image rm $imageName:latest
+        sudo docker image rm ajarombek/$imageName:$imageLabel
+        
+        sudo docker image ls
+    """
+}
