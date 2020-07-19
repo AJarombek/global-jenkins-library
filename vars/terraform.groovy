@@ -32,14 +32,15 @@ def terraformValidate(String directory) {
 /**
  * Create a plan of the infrastructure that Terraform will create.
  * @param directory The directory containing Terraform files.
+ * @param script Optional custom Terraform plan script.  Useful when the plan includes variables.
  */
-def terraformPlan(String directory) {
+def terraformPlan(String directory, String script = 'terraform plan -detailed-exitcode -out=terraform.tfplan') {
     env.TERRAFORM_NO_CHANGES = 'false'
     env.TERRAFORM_PLAN_ERRORS = 'false'
 
     dir(directory) {
         def result = sh(
-            script: 'terraform plan -detailed-exitcode -out=terraform.tfplan',
+            script: script,
             returnStatus: true
         )
 
