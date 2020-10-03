@@ -12,6 +12,7 @@ must exist at the top of the pipeline code.
 | Filename                | Description                                                                                  |
 |-------------------------|----------------------------------------------------------------------------------------------|
 | `cloudformation.groovy` | Functions containing reusable CloudFormation Stack pipeline steps.                           |
+| `dockerhub.groovy`      | Functions containing reusable Dockerhub pipeline steps.                                      |
 | `email.groovy`          | Functions containing reusable pipeline steps for sending emails.                             |
 | `genericsteps.groovy`   | Functions containing reusable pipeline steps for declarative pipelines.                      |
 | `git.groovy`            | Functions containing reusable pipeline steps for git/github operations.                      |
