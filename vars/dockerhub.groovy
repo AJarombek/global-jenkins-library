@@ -28,7 +28,7 @@ def auth() {
  */
 def pushImage(String imageName, String imageLabel = 'latest') {
     sh """
-        sudo docker image tag $imageName:latest AJarombek/$imageName:$imageLabel
-        sudo docker push AJarombek/$imageName:$imageLabel
+        sudo docker image tag $imageName:latest ajarombek/$imageName:$imageLabel
+        sudo docker push ajarombek/$imageName:$imageLabel
     """
 }

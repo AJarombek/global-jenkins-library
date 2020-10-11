@@ -32,3 +32,24 @@ def postScript(String bodyTitle, String bodyContent, String jobName, String buil
     email.sendEmail(bodyTitle, bodyContent, jobName, buildStatus, buildNumber, buildUrl)
     cleanWs()
 }
+
+/**
+ * Run a Shell script in a specific directory.  The result of the bash script determines the status of the build.
+ * @param script The shell script to run.
+ * @param directory The directory to run the shell script within.
+ * @param failureStatus The pipeline status if the shell script returns a non-zero exit code.
+ */
+def shReturnStatus(String script, String directory = '.', String failureStatus = 'UNSTABLE') {
+    dir(directory) {
+        def status = sh (
+            script: script,
+            returnStatus: true
+        )
+
+        if (status >= 1) {
+            currentBuild.result = failureStatus
+        } else {
+            currentBuild.result = "SUCCESS"
+        }
+    }
+}
